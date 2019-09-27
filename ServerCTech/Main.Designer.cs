@@ -35,11 +35,13 @@
             this.btn_Start = new System.Windows.Forms.Button();
             this.btn_Restart = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
             this.panel_Move = new System.Windows.Forms.Panel();
+            this.txtSend = new System.Windows.Forms.TextBox();
+            this.btnSend = new System.Windows.Forms.Button();
+            this.cbxClient = new System.Windows.Forms.ComboBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -117,36 +119,6 @@
             this.button4.Text = "Account";
             this.button4.UseVisualStyleBackColor = true;
             // 
-            // button5
-            // 
-            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button5.Location = new System.Drawing.Point(440, 204);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 23);
-            this.button5.TabIndex = 6;
-            this.button5.Text = "button5";
-            this.button5.UseVisualStyleBackColor = true;
-            // 
-            // button6
-            // 
-            this.button6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button6.Location = new System.Drawing.Point(582, 204);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(75, 23);
-            this.button6.TabIndex = 7;
-            this.button6.Text = "button6";
-            this.button6.UseVisualStyleBackColor = true;
-            // 
-            // button7
-            // 
-            this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button7.Location = new System.Drawing.Point(296, 204);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(75, 23);
-            this.button7.TabIndex = 8;
-            this.button7.Text = "Account";
-            this.button7.UseVisualStyleBackColor = true;
-            // 
             // panel_Move
             // 
             this.panel_Move.BackColor = System.Drawing.Color.DarkOrchid;
@@ -157,15 +129,51 @@
             this.panel_Move.TabIndex = 9;
             this.panel_Move.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel_Move_MouseDown);
             // 
+            // txtSend
+            // 
+            this.txtSend.Location = new System.Drawing.Point(395, 205);
+            this.txtSend.Name = "txtSend";
+            this.txtSend.Size = new System.Drawing.Size(190, 20);
+            this.txtSend.TabIndex = 10;
+            // 
+            // btnSend
+            // 
+            this.btnSend.Location = new System.Drawing.Point(592, 204);
+            this.btnSend.Name = "btnSend";
+            this.btnSend.Size = new System.Drawing.Size(66, 23);
+            this.btnSend.TabIndex = 11;
+            this.btnSend.Text = "Send";
+            this.btnSend.UseVisualStyleBackColor = true;
+            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
+            // 
+            // cbxClient
+            // 
+            this.cbxClient.FormattingEnabled = true;
+            this.cbxClient.Location = new System.Drawing.Point(258, 204);
+            this.cbxClient.Name = "cbxClient";
+            this.cbxClient.Size = new System.Drawing.Size(121, 21);
+            this.cbxClient.TabIndex = 12;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::ServerCTech.Properties.Resources._thumbnail;
+            this.pictureBox1.Location = new System.Drawing.Point(258, 35);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(200, 104);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 13;
+            this.pictureBox1.TabStop = false;
+            // 
             // Main
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(670, 367);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.cbxClient);
+            this.Controls.Add(this.btnSend);
+            this.Controls.Add(this.txtSend);
             this.Controls.Add(this.panel_Move);
-            this.Controls.Add(this.button7);
-            this.Controls.Add(this.button6);
-            this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.btn_Restart);
             this.Controls.Add(this.btn_Start);
@@ -179,7 +187,9 @@
             this.Load += new System.EventHandler(this.Main_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -191,11 +201,12 @@
         private System.Windows.Forms.Button btn_Start;
         private System.Windows.Forms.Button btn_Restart;
         private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel_Move;
+        private System.Windows.Forms.TextBox txtSend;
+        private System.Windows.Forms.Button btnSend;
+        private System.Windows.Forms.ComboBox cbxClient;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 

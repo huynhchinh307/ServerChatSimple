@@ -11,19 +11,22 @@ using System.Windows.Forms;
 using System.Net.Sockets;
 using System.Net;
 using System.Configuration;
+using System.Data.SqlClient;
 
 namespace ServerCTech
 {
     
     public partial class Main : Form
     {
+        
+        List<Socket> clients= new List<Socket>();
         int online = 0; //Number client online
         byte[] data = new byte[1024];
         int size = 1024;
-        int sttServer = 0; //Status server 0-Close 1-Open
-        IPAddress ip;
+        int sttServer = 0; //Status server 0-Close 1-Open       IPAddress ip;
         IPEndPoint ie;
         Socket server, client;
+        IPAddress ip;
         //Move form
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
@@ -93,14 +96,42 @@ namespace ServerCTech
             {
                 Socket oldserver = (Socket)iar.AsyncState;
                 client = oldserver.EndAccept(iar);
-                online = online + 1;
-                lst_Log.Invoke(new Action(() => lst_Log.Items.Add("Connected to: " + client.RemoteEndPoint.ToString())));
-                lst_Log.Invoke(new Action(() => lst_Log.Items.Add("Number client online: " + online)));
-                string stringData = "WELLCOME TO CTECH. GOOD DAY";
-                byte[] message1 = Encoding.UTF8.GetBytes(stringData);
-                client.BeginSend(message1, 0, message1.Length, SocketFlags.None, new
-                                            AsyncCallback(SendData), client);
-                server.BeginAccept(new AsyncCallback(AcceptConn), server);
+                //Xữ lý đăng nhập
+
+                int recv = client.Receive(data);
+                string datalogin = Encoding.UTF8.GetString(data, 0, recv);
+                string[] account = datalogin.Split(' ');
+                {
+                    //Kết nối csdl và truy vấn người dùng
+                    SqlConnection conn = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\CHINH\source\repos\ServerCTech\ServerCTech\Client.mdf;Integrated Security=True");
+                    string sql = "Select count(*) from Account where Username='" + account[0] + "' and Password='" + account[1] + "'";
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    int i = (int)cmd.ExecuteScalar();
+                    conn.Close();
+                    if(i>0)
+                    {
+                        client.Send(Encoding.UTF8.GetBytes("1"));
+                        online = online + 1;
+                        lst_Log.Invoke(new Action(() => lst_Log.Items.Add("Connected to: " + client.RemoteEndPoint.ToString())));
+                        lst_Log.Invoke(new Action(() => lst_Log.Items.Add("Number client online: " + online)));
+                        string stringData = "WELLCOME TO CTECH. GOOD DAY";
+                        byte[] message1 = Encoding.UTF8.GetBytes(stringData);
+                        client.BeginSend(message1, 0, message1.Length, SocketFlags.None, new
+                                                    AsyncCallback(SendData), client);
+                        clients.Add(client);
+                        cbxClient.Invoke(new Action(() => cbxClient.Items.Add(client.RemoteEndPoint.ToString())));
+
+                        server.BeginAccept(new AsyncCallback(AcceptConn), server);
+                    }
+                    else
+                    {
+                        //Send key 0 báo login fail, tiếp tục mở chờ đăng nhập tiếp theo
+                        client.Send(Encoding.UTF8.GetBytes("0"));
+                        server.BeginAccept(new AsyncCallback(AcceptConn), server);
+                    }
+                }
+                
             }
         }
         void SendData(IAsyncResult iar)
@@ -116,6 +147,32 @@ namespace ServerCTech
             lst_Log.Items.Clear();
         }
 
+        private void btnSend_Click(object sender, EventArgs e)
+        {
+            if (txtSend.Text != null)
+            {
+                string[] arrListStr = txtSend.Text.Split(' ');
+                if (arrListStr[0].Equals("/send") && arrListStr.Length>=3)
+                {
+
+                    foreach (Socket client in clients)
+                    {
+                        if (arrListStr[1].Equals(client.RemoteEndPoint.ToString()))
+                        {
+                            byte[] message = Encoding.UTF8.GetBytes(arrListStr[2]);
+                            txtSend.Clear();
+                            client.BeginSend(message, 0, message.Length, SocketFlags.None, new
+                                           AsyncCallback(SendData), client);
+                            lst_Log.Invoke(new Action(() => lst_Log.Items.Add("Sent client: " + arrListStr[1].ToString() + " - text: " + arrListStr[2])));
+                        }
+                    }
+                    
+                }
+                else
+                    MessageBox.Show("Cú phép sai!!!");
+            }
+        }
+
         void ReceiveData(IAsyncResult iar)
         {
             if(sttServer==1)
@@ -127,11 +184,10 @@ namespace ServerCTech
                     online = online - 1;
                     client.Close();
                     lst_Log.Invoke(new Action(() => lst_Log.Items.Add("Number client online: " + online)));
-                    server.BeginAccept(new AsyncCallback(AcceptConn), server);
                     return;
                 }
                 string receivedData = Encoding.UTF8.GetString(data, 0, recv);
-                lst_Log.Invoke(new Action(() => lst_Log.Items.Add("Received from: " + client.RemoteEndPoint + " =" + receivedData)));
+                lst_Log.Invoke(new Action(() => lst_Log.Items.Add("Client " + client.RemoteEndPoint + " sent: " + receivedData)));
                 if (receivedData.Equals("/exit"))
                 {
                     byte[] exit = Encoding.UTF8.GetBytes("exit-ok");

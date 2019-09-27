@@ -86,12 +86,8 @@ namespace ServerCTech
                         return "Hiện tại là "+ DateTime.Now.ToShortDateString();
                         break;
                     }
-                default: return "Lệnh chưa được cập nhật trên server";
+                default: return "";
             }
-        }
-        public string CountOnline()
-        {
-            return Server.Available.ToString();
         }
     }
 }
